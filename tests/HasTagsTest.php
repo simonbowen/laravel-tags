@@ -148,7 +148,7 @@ class HasTagsTest extends TestCase
             'tags' => ['tagA', 'tagB', 'tagC'],
         ]);
 
-        $testModels = TestModel::withAnyTags(['tagB', 'tagC']);
+        $testModels = TestModel::withAnyTags(['tagB', 'tagC'])->get()->sortBy('name');
 
         $this->assertEquals(['model2', 'model3'], $testModels->pluck('name')->toArray());
     }

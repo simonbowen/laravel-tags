@@ -52,7 +52,7 @@ class HasTagsScopesTest extends TestCase
     /** @test */
     public function it_provides_as_scope_to_get_all_models_that_have_any_of_the_given_tags()
     {
-        $testModels = TestModel::withAnyTags(['tagC', 'tagD'])->get();
+        $testModels = TestModel::withAnyTags(['tagC', 'tagD'])->get()->sortBy('name');
 
         $this->assertEquals(['model3', 'model4'], $testModels->pluck('name')->toArray());
     }
@@ -60,7 +60,7 @@ class HasTagsScopesTest extends TestCase
     /** @test */
     public function the_with_any_tags_scopes_will_still_items_when_passing_a_non_existing_tag()
     {
-        $testModels = TestModel::withAnyTags(['tagB', 'tagC', 'nonExistingTag'])->get();
+        $testModels = TestModel::withAnyTags(['tagB', 'tagC', 'nonExistingTag'])->get()->sortBy('name');
 
         $this->assertEquals(['model2', 'model3'], $testModels->pluck('name')->toArray());
     }
@@ -80,7 +80,7 @@ class HasTagsScopesTest extends TestCase
     /** @test */
     public function it_provides_as_scope_to_get_all_models_that_have_any_of_the_given_tags_with_type()
     {
-        $testModels = TestModel::withAnyTags(['tagE'], 'typedTag')->get();
+        $testModels = TestModel::withAnyTags(['tagE'], 'typedTag')->get()->sortBy('name');
 
         $this->assertEquals(['model5', 'model6'], $testModels->pluck('name')->toArray());
 
@@ -104,7 +104,7 @@ class HasTagsScopesTest extends TestCase
     /** @test */
     public function it_provides_as_scope_to_get_all_models_that_have_any_of_the_given_tags_with_any_type()
     {
-        $testModels = TestModel::withAnyTagsOfAnyType(['tagE', 'tagF'])->get();
+        $testModels = TestModel::withAnyTagsOfAnyType(['tagE', 'tagF'])->get()->sortBy('name');
 
         $this->assertEquals(['model5', 'model6'], $testModels->pluck('name')->toArray());
     }

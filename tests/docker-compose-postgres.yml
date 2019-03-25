@@ -1,0 +1,11 @@
+version: "2"
+services:
+    postgres:
+        restart: always
+        image: postgres:latest
+        environment:
+            POSTGRES_PASSWORD: password
+            POSTGRES_USER: username
+            POSTGRES_DB: laravel_tags
+        ports:
+            - "5432:5432"

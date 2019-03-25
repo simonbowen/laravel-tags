@@ -35,9 +35,9 @@ abstract class TestCase extends Orchestra
             $dotenv->load();
         }
 
-        $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql', [
-            'driver' => 'mysql',
+        $app['config']->set('database.default', 'pgsql');
+        $app['config']->set('database.connections.pgsql', [
+            'driver' => 'pgsql',
             'host' => '127.0.0.1',
             'database' => env('DB_DATABASE', 'laravel_tags'),
             'username' => env('DB_USERNAME', 'username'),
@@ -54,7 +54,7 @@ abstract class TestCase extends Orchestra
      */
     protected function setUpDatabase($app)
     {
-        $this->dropAllTables();
+        $this->dropAllTables($app);
 
         include_once __DIR__.'/../database/migrations/create_tag_tables.php.stub';
 
@@ -71,7 +71,30 @@ abstract class TestCase extends Orchestra
         });
     }
 
-    protected function dropAllTables()
+    protected function dropAllTables($app)
+    {
+        $driver = $app['config']['database']['default'];
+        ($driver == 'pgsql') ? $this->dropAllPostgresTables() : $this->dropAllMySQLTables();
+    }
+
+    protected function dropAllPostgresTables()
+    {
+        $query = "SELECT * FROM pg_catalog.pg_tables WHERE schemaname = 'public' ORDER BY schemaname, tablename;";
+        $rows = collect(DB::select($query));
+
+        if($rows->isEmpty()) {
+            return;
+        }
+
+        $rows
+            ->map(function ($row) {
+                return $row->tablename;
+            })->each(function (string $tableName) {
+                DB::statement("DROP TABLE {$tableName}");
+            });
+    }
+
+    protected function dropAllMySQLTables()
     {
         $rows = collect(DB::select('SHOW TABLES'));
 
